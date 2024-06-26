@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:minerz/models/hashrate_power.dart';
+import 'package:minerz/models/miner.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -11,18 +12,17 @@ class HomeScreen extends StatefulWidget {
 }
 
 class HomeScreenState extends State<HomeScreen> {
-  // Total coins
-  int totalCoins = 21000000;
-  int minerHashrate = 2000;
+  // Miner data
+  Miner miner = Miner();
+  late MinerHashratePower minerHashratePower;
 
-  MinerHashratePower minerHashratePower = MinerHashratePower();
-
+  // Timer
   Timer? timer;
 
   @override
   void initState() {
     super.initState();
-    minerHashrate = minerHashratePower.maxHashratePower;
+    minerHashratePower = miner.minerHashratePower;
     _setUpHashRateReloadTimer();
   }
 
@@ -36,11 +36,11 @@ class HomeScreenState extends State<HomeScreen> {
     timer = Timer.periodic(
       const Duration(milliseconds: 1200),
       (Timer t) => setState(() {
-        if (minerHashrate < minerHashratePower.maxHashratePower - 10) {
-          minerHashrate += 10;
-          print("Reloaded 10 to the hash power");
+        if (miner.minerHashrate < minerHashratePower.maxHashratePower - minerHashratePower.miningEarnings) {
+          miner.minerHashrate += minerHashratePower.miningEarnings;
+          print("Reloaded ${minerHashratePower.miningEarnings} to the hash power");
         } else {
-          minerHashrate = minerHashratePower.maxHashratePower;
+          miner.minerHashrate = minerHashratePower.maxHashratePower;
           timer?.cancel();
           print("Timer canceled");
         }
@@ -50,23 +50,23 @@ class HomeScreenState extends State<HomeScreen> {
 
   void _consumeHashRate() {
     setState(() {
-      if (minerHashrate >= 10) {
+      if (miner.minerHashrate >= minerHashratePower.miningEarnings) {
         if (timer != null && !(timer!.isActive)) {
           _setUpHashRateReloadTimer();
           print("Timer restarted");
         }
-        minerHashrate -= 10;
-        totalCoins += 10;
+        miner.minerHashrate -= minerHashratePower.miningEarnings;
+        miner.totalCoins += minerHashratePower.miningEarnings;
       }
     });
   }
 
   void _upgradeMaxHashRate() {
     setState(() {
-      if (totalCoins >= minerHashratePower.upgradeToNextLevelCost) {
-        totalCoins -= minerHashratePower.upgradeToNextLevelCost;
+      if (miner.totalCoins >= minerHashratePower.upgradeToNextLevelCost) {
+        miner.totalCoins -= minerHashratePower.upgradeToNextLevelCost;
         minerHashratePower.upgradeHashPower();
-        minerHashrate = minerHashratePower.maxHashratePower;
+        miner.minerHashrate = minerHashratePower.maxHashratePower;
       }
     });
   }
@@ -154,7 +154,7 @@ class HomeScreenState extends State<HomeScreen> {
           width: 16.0,
         ),
         Text(
-          "$totalCoins",
+          "${miner.totalCoins}",
           style: const TextStyle(
             fontSize: 45,
             color: Colors.white,
@@ -193,7 +193,7 @@ class HomeScreenState extends State<HomeScreen> {
               color: Colors.white,
             ),
             Text(
-              "$minerHashrate / ${minerHashratePower.maxHashratePower}",
+              "${miner.minerHashrate} / ${minerHashratePower.maxHashratePower}",
               style: const TextStyle(
                   fontSize: 15.0,
                   color: Colors.white,
@@ -214,7 +214,7 @@ class HomeScreenState extends State<HomeScreen> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(
-          "Level ${minerHashratePower.tapLevel}",
+          "Level ${minerHashratePower.hashrateBoosterLevel}",
           style: const TextStyle(
               color: Colors.white, fontWeight: FontWeight.w900, fontSize: 13.0),
         ),

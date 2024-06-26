@@ -1,5 +1,7 @@
+import 'package:minerz/utils/string.dart';
+
 class MinerHashratePower {
-  int _tapLevel = 0;
+  int _hashrateBoosterLevel = 0;
   double _maxHashratePower = 2000;
   
   double _upgradeBoost = 250;
@@ -8,38 +10,57 @@ class MinerHashratePower {
   double _upgradeToNextLevelCost = 1500;
   double _upgradeMultiplicatorFactor = 1.1;
 
+  int _miningEarnings = 10;
+
 
   // Getters
-  int get tapLevel => _tapLevel;
+  int get hashrateBoosterLevel => _hashrateBoosterLevel;
+  int get miningEarnings => _miningEarnings;
   int get maxHashratePower => _maxHashratePower.round();
   int get upgradeToNextLevelCost => _upgradeToNextLevelCost.round();
   String get upgradeToNextLevelCostString => _formatUpgradeToNextLevelCost();
 
 
   void upgradeHashPower() {
-    _tapLevel += 1;
+    _hashrateBoosterLevel += 1;
 
-    _maxHashratePower += _upgradeBoost;
-    _upgradeBoost += _upgradeBoost * _boostMutliplicatorFactor;
+    _upgradeMaxHashRatePower(); // Update the user's maximum hashrate
+    _upgradeBoostValue(); // Next boost that will be bought
+
+    _hashrateBoosterCostUpgrade(); // Next price to upgrade maximum hashrate power
+
+    _upgradeHashrateMultiplicatorFactors();
+    _upgradeMiningTapEarnings();
+  }
+
+  /// Number of coins earned for each tap
+  void _upgradeMiningTapEarnings() {
+    _miningEarnings += 1;
+  }
+
+  /// Functions to upgrade multiplicator factors that will upgrade boosts and upgrade boosts
+  void _upgradeHashrateMultiplicatorFactors() {
     _boostMutliplicatorFactor += _boostMutliplicatorFactor / 10;
-
-    _upgradeToNextLevelCost = _upgradeToNextLevelCost * _upgradeMultiplicatorFactor;
     _upgradeMultiplicatorFactor += 0.3;
+  }
+
+  void _upgradeMaxHashRatePower() {
+    _maxHashratePower += _upgradeBoost;
+  }
+
+  /// Function to upgrade the price to upgrade the user's hashrate power for next level
+  void _hashrateBoosterCostUpgrade() {
+    _upgradeToNextLevelCost = _upgradeToNextLevelCost * _upgradeMultiplicatorFactor;
+  }
+
+  /// Function to update the boost that will be added the next time user wants to upgrade his maximum hashrate
+  void _upgradeBoostValue() {
+    _upgradeBoost += _upgradeBoost * _boostMutliplicatorFactor;
   }
 
   String _formatUpgradeToNextLevelCost() {
     double num = _upgradeToNextLevelCost;
-    if (num > 999 && num < 99999) {
-        return "${(num / 1000).toStringAsFixed(1)} K";
-      } else if (num > 99999 && num < 999999) {
-        return "${(num / 1000).toStringAsFixed(0)} K";
-      } else if (num > 999999 && num < 999999999) {
-        return "${(num / 1000000).toStringAsFixed(1)} M";
-      } else if (num > 999999999) {
-        return "${(num / 1000000000).toStringAsFixed(1)} B";
-      } else {
-        return num.toString();
-      }
+    return integerValueFormattedToString(num);
   }
 
 }
