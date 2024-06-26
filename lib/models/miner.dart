@@ -4,11 +4,11 @@ import 'package:minerz/utils/string.dart';
 
 class Miner {
   double _profitPerHour = 0;
-  double totalCoins = 0;
+  double totalCoins = 2000;
   int minerHashrate = 2000;
   
-  String _name = "Miner";
-  String _profilIcon = "https://robohash.org/";
+  String _name = "Holder B";
+  String _profilIconUrl = "https://robohash.org/";
   
   MinerLevel _level = MinerLevel.newbie;  
 
@@ -22,11 +22,11 @@ class Miner {
   String get totalCoinsFormattedString => _getFormattedTotalCoins();
 
   String get name => _name;
-  String get profilIcon => _profilIcon;
+  String get profilIconUrl => _profilIconUrl;
   MinerLevel get level => _level;
 
   Miner() {
-    _profilIcon += name;
+    _profilIconUrl += name;
     minerHashrate = minerHashratePower.maxHashratePower;
   }
 
@@ -38,6 +38,10 @@ class Miner {
 
   String _getFormattedTotalCoins() {
     return integerValueFormattedToString(totalCoins);
+  }
+
+  void upgradePph(int coins) {
+    _profitPerHour += coins;
   }
 
 }
