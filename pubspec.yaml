@@ -67,6 +67,11 @@ flutter:
     - images/bell.png
     - images/handshake.png
     - images/calendar.png
+    - images/nostr.png
+    - images/2fingz.png
+    - images/5fingz.png
+    - images/10fingz.png
+    - images/alien.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

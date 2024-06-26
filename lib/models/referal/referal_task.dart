@@ -48,7 +48,7 @@ List<ReferalTasks> specialTasks = List.from([
     taskAction: () {},
   ),
   ReferalTasks(
-    taskIcon: "images/X.jpg",
+    taskIcon: "images/nostr.png",
     taskTitle: "Follow us on Nostr",
     taskDescription:
         "10,000",
@@ -79,28 +79,28 @@ List<ReferalTasks> specialTasks = List.from([
 
 List<ReferalTasks> bonusTasks = List.from([
   ReferalTasks(
-    taskIcon: "images/calendar.png",
+    taskIcon: "images/2fingz.png",
     taskTitle: "Invite 2 frens",
     taskDescription:
         "50,000",
     taskAction: () {},
   ),
   ReferalTasks(
-    taskIcon: "images/calendar.png",
+    taskIcon: "images/5fingz.png",
     taskTitle: "Invite 5 frens",
     taskDescription:
         "150,000",
     taskAction: () {},
   ),
   ReferalTasks(
-    taskIcon: "images/calendar.png",
+    taskIcon: "images/10fingz.png",
     taskTitle: "Invite 10 frens",
     taskDescription:
         "500,000",
     taskAction: () {},
   ),
   ReferalTasks(
-    taskIcon: "images/calendar.png",
+    taskIcon: "images/alien.png",
     taskTitle: "Invite 100 frens",
     taskDescription:
         "5,000,000",
