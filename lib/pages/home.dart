@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:minerz/models/hashrate_power.dart';
 import 'package:minerz/models/miner.dart';
+import 'package:minerz/widgets/coin.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -36,13 +37,20 @@ class HomeScreenState extends State<HomeScreen> {
     timer = Timer.periodic(
       const Duration(milliseconds: 1200),
       (Timer t) => setState(() {
-        if (miner.minerHashrate < minerHashratePower.maxHashratePower - minerHashratePower.miningEarnings) {
+        if (miner.minerHashrate <
+            minerHashratePower.maxHashratePower -
+                minerHashratePower.miningEarnings) {
           miner.minerHashrate += minerHashratePower.miningEarnings;
-          print("Reloaded ${minerHashratePower.miningEarnings} to the hash power");
+          print(
+              "Reloaded ${minerHashratePower.miningEarnings} to the hash power");
         } else {
           miner.minerHashrate = minerHashratePower.maxHashratePower;
-          timer?.cancel();
+          //timer?.cancel();
           print("Timer canceled");
+        }
+
+        if (miner.profitPerHour > 0) {
+          miner.totalCoins += miner.profitPerHour / 3600;
         }
       }),
     );
@@ -67,6 +75,7 @@ class HomeScreenState extends State<HomeScreen> {
         miner.totalCoins -= minerHashratePower.upgradeToNextLevelCost;
         minerHashratePower.upgradeHashPower();
         miner.minerHashrate = minerHashratePower.maxHashratePower;
+        miner.upgradePph(5000000);
       }
     });
   }
@@ -107,29 +116,128 @@ class HomeScreenState extends State<HomeScreen> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          _buildMinerStatContainre(),
+          _buildMinerStatContainer(miner.profilIconUrl),
           _buildCoinsCounter(),
           GestureDetector(
             onTap: () => {_consumeHashRate()},
-            child: _buildCoinTapContainer(),
+            child: const CoinWidget(
+              coinHeight: 300.0,
+              coinWidth: 300.0,
+              borderWidth: 20,
+              centerIconSize: 190,
+            ),
           ),
           Padding(
+            /// Hashrate bottom section
             padding: const EdgeInsets.only(left: 16.0, right: 16.0),
             child: _buildBottomHashrate(),
-          )
+          ),
+          Container(
+            /// Bottom separator between the views and the navigation bar
+            height: 0.2,
+            color: Colors.white,
+          ),
         ],
       ),
     );
   }
 
-  Padding _buildMinerStatContainre() {
+  Padding _buildMinerStatContainer(String minerProfilPictureUrl) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Container(
         height: 70.0,
         decoration: BoxDecoration(
-          color: Colors.red,
           borderRadius: BorderRadius.circular(40.0),
+          border: Border.all(width: 0.2, color: Colors.white),
+          boxShadow: const [
+            BoxShadow(
+              color: Colors.black,
+              offset: Offset(0.0, 1.0),
+              blurRadius: 5.0,
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Padding(
+              /// Avatar widget
+              padding: const EdgeInsets.only(left: 8.0, right: 16.0),
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(25.0),
+                  border: Border.all(width: 0.5, color: Colors.white),
+                  gradient: const LinearGradient(
+                    begin: Alignment.bottomLeft,
+                    end: Alignment.centerRight,
+                    colors: [
+                      Color.fromARGB(255, 28, 28, 28),
+                      Color.fromARGB(255, 109, 108, 108),
+                    ],
+                  ),
+                ),
+                child: CircleAvatar(
+                  radius: 25.0,
+                  backgroundColor: Colors.transparent,
+                  backgroundImage: NetworkImage(minerProfilPictureUrl),
+                ),
+              ),
+            ),
+            Expanded(
+              /// Player stats section
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        miner.name,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 4.0,
+                      ),
+                      Row(
+                        children: [
+                          const CoinWidget(
+                              coinHeight: 20.0,
+                              coinWidth: 20.0,
+                              borderWidth: 2,
+                              centerIconSize: 13),
+                          const SizedBox(
+                            width: 8.0,
+                          ),
+                          Text(
+                            miner.profitPerHourFormattedString,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 13.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 16.0),
+                    child: Container(
+                      child: IconButton(
+                        icon: Image.asset("images/medaille.png"),
+                        onPressed: () => {print("Display leagues")},
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -139,22 +247,17 @@ class HomeScreenState extends State<HomeScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Container(
-          height: 30.0,
-          width: 30.0,
-          decoration: BoxDecoration(
-              color: Colors.yellow,
-              borderRadius: BorderRadius.circular(30.0),
-              border: Border.all(
-                width: 0.8,
-                color: Colors.red,
-              )),
+        const CoinWidget(
+          coinHeight: 30.0,
+          coinWidth: 30.0,
+          borderWidth: 3,
+          centerIconSize: 17,
         ),
         const SizedBox(
           width: 16.0,
         ),
         Text(
-          "${miner.totalCoins}",
+          "${miner.totalCoins.round()}",
           style: const TextStyle(
             fontSize: 45,
             color: Colors.white,
@@ -162,22 +265,6 @@ class HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ],
-    );
-  }
-
-  Container _buildCoinTapContainer() {
-    return Container(
-      height: 300,
-      width: 300,
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(200.0),
-          color: const Color.fromARGB(95, 255, 235, 59),
-          border: Border.all(width: 20, color: Colors.yellow)),
-      child: const Icon(
-        //Icons.currency_bitcoin,
-        Icons.add,
-        size: 190,
-      ),
     );
   }
 
@@ -229,11 +316,20 @@ class HomeScreenState extends State<HomeScreen> {
         const SizedBox(
           height: 10,
         ),
-        Text(
-          minerHashratePower.upgradeToNextLevelCostString,
-          style: const TextStyle(
-              color: Colors.white, fontWeight: FontWeight.w900, fontSize: 16),
-        ),
+        Row(
+          children: [
+            const CoinWidget(coinHeight: 15.0, coinWidth: 15.0, borderWidth: 1, centerIconSize: 12,),
+            const SizedBox(width: 8,),
+            Text(
+              minerHashratePower.upgradeToNextLevelCostString,
+              style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w900,
+                fontSize: 14,
+              ),
+            ),
+          ],
+        )
       ],
     );
   }
