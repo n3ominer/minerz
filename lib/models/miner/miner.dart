@@ -1,5 +1,5 @@
-import 'package:minerz/models/hashrate_power.dart';
-import 'package:minerz/models/minerz_level.dart';
+import 'package:minerz/models/miner/hashrate_power.dart';
+import 'package:minerz/models/miner/minerz_level.dart';
 import 'package:minerz/utils/string.dart';
 
 class Miner {

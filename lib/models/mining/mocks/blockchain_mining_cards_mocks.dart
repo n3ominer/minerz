@@ -1,0 +1,118 @@
+import 'package:minerz/models/mining/common_mining_card.dart';
+
+List<CommonMiningCard> blockchainCards = [
+  CommonMiningCard(
+    id: 'blockchain001',
+    cardTitle: 'CPU',
+    cardDescription:
+        'To have a chance to mine some coins, you should upgrade your CPUs.',
+    cardTotalPph: 50,
+    cardUpgradeCost: 1500,
+    upgradePph: 12000,
+    cardLevel: 0,
+    cardIcon: '',
+    cardIsLocked: false,
+    nextUpgradeTimer: '',
+    hasTimer: false,
+  ),
+  CommonMiningCard(
+    id: 'blockchain002',
+    cardTitle: 'CGU',
+    cardDescription:
+        'CPU are good, GPU hash faster though ! Improve it to increase your chance to win some Bitcoins.',
+    cardTotalPph: 50,
+    cardUpgradeCost: 1500,
+    upgradePph: 200,
+    cardLevel: 0,
+    cardIcon: '',
+    cardIsLocked: false,
+    nextUpgradeTimer: '',
+    hasTimer: false,
+  ),
+  CommonMiningCard(
+    id: 'blockchain003',
+    cardTitle: 'Asics',
+    cardDescription:
+        'invested in machines specially designed to execute the SHA 256 algorithm !',
+    cardTotalPph: 50,
+    cardUpgradeCost: 1500,
+    upgradePph: 200,
+    cardLevel: 0,
+    cardIcon: '',
+    cardIsLocked: false,
+    nextUpgradeTimer: '',
+    hasTimer: false,
+  ),
+  CommonMiningCard(
+    id: 'blockchain004',
+    cardTitle: 'Mastering Bitcoin',
+    cardDescription:
+        "Learn about Bitcoin, with this app and the book \"Mastering bitcoin\" by Andreas Antonopoulos.",
+    cardTotalPph: 50,
+    cardUpgradeCost: 1500,
+    upgradePph: 200,
+    cardLevel: 0,
+    cardIcon: '',
+    cardIsLocked: false,
+    nextUpgradeTimer: '',
+    hasTimer: false,
+  ),
+  CommonMiningCard(
+    id: 'blockchain005',
+    cardTitle: 'Proof of work',
+    cardDescription:
+        "The only valuable and scarce asset it Energy. Bitcoin is based on energy.",
+    cardTotalPph: 50,
+    cardUpgradeCost: 1500,
+    upgradePph: 200,
+    cardLevel: 0,
+    cardIcon: '',
+    cardIsLocked: false,
+    nextUpgradeTimer: '',
+    hasTimer: false,
+  ),
+  CommonMiningCard(
+    id: 'blockchain006',
+    cardTitle: 'Bitcoin Core',
+    cardDescription:
+        "The only valuable and scarce asset it Energy. Bitcoin is based on energy.",
+    cardTotalPph: 50,
+    cardUpgradeCost: 1500,
+    upgradePph: 200,
+    cardLevel: 0,
+    cardIcon: '',
+    cardIsLocked: false,
+    nextUpgradeTimer: '',
+    hasTimer: false,
+  ),
+  CommonMiningCard(
+    id: 'blockchain006',
+    cardTitle: 'UTXO',
+    cardDescription:
+        "Your coins are either earned by minig or received as the output of a transaction. Its called 'UTXO' for (U)nspent Transaction(TX) (O)utput",
+    cardTotalPph: 50,
+    cardUpgradeCost: 1500,
+    upgradePph: 200,
+    cardLevel: 0,
+    cardIcon: '',
+    cardIsLocked: false,
+    nextUpgradeTimer: '',
+    hasTimer: false,
+  ),
+  CommonMiningCard(
+    id: 'blockchain006',
+    cardTitle: 'Coinbase',
+    cardDescription:
+        "Congratulations, you mined your first block. Your coinbase transaction is know validated! You earned some Bitcoins !",
+    cardTotalPph: 50,
+    cardUpgradeCost: 1500,
+    upgradePph: 200,
+    cardLevel: 0,
+    cardIcon: '',
+    cardIsLocked: false,
+    nextUpgradeTimer: '',
+    hasTimer: false,
+  ),
+
+
+];
