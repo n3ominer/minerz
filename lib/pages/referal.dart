@@ -57,19 +57,25 @@ class _ReferralScreenState extends State<ReferralScreen> {
             child: Text(
               "Earn",
               style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 35.0,
-                  fontWeight: FontWeight.bold),
+                color: Colors.white,
+                fontSize: 35.0,
+                fontWeight: FontWeight.bold,
+                fontFamily: "BungeeSpice",
+              ),
             ),
           ),
           const SizedBox(
             height: 16,
           ),
-          _buildTasksSection(true, inviteTasks, sectionTitle: "Invite tasks"),
+          _buildTasksSection(
+            true,
+            inviteTasks,
+            sectionTitle: "Invite tasks",
+          ),
           const SizedBox(
             height: 16,
           ),
-          _buildTasksSection(true, dailyTasks, sectionTitle: "Daily tasks"),
+          _buildTasksSection(true, dailyTasks, sectionTitle: "Daily tasks", hasEarnings: false),
           const SizedBox(
             height: 16,
           ),
@@ -84,7 +90,7 @@ class _ReferralScreenState extends State<ReferralScreen> {
   }
 
   Padding _buildTasksSection(bool withSectionTitle, List<ReferalTasks> tasks,
-      {String sectionTitle = ""}) {
+      {String sectionTitle = "", bool hasEarnings = true}) {
     return Padding(
       padding: const EdgeInsets.only(left: 8.0, right: 8.0),
       child: Column(
@@ -115,6 +121,7 @@ class _ReferralScreenState extends State<ReferralScreen> {
                   child: ReferalTasksCellWidget(
                     tasks: tasks,
                     taksIndex: index,
+                    fontFamily: hasEarnings ? 'Rye' : '',
                   ),
                 );
               },

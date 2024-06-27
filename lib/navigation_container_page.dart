@@ -46,7 +46,7 @@ class _NavigationExampleState extends State<NavigationExample> {
               currentPageIndex = index;
             });
           },
-          indicatorColor: Colors.grey,
+          indicatorColor: Colors.orange,
           selectedIndex: currentPageIndex,
           destinations: <Widget>[
             _buildNavigationDestination(Icons.home, Icons.home),

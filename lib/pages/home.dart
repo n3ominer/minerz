@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:minerz/models/hashrate_power.dart';
-import 'package:minerz/models/miner.dart';
+import 'package:minerz/models/miner/hashrate_power.dart';
+import 'package:minerz/models/miner/miner.dart';
 import 'package:minerz/widgets/coin.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -106,9 +106,10 @@ class HomeScreenState extends State<HomeScreen> {
         title: const Text(
           "Minerz",
           style: TextStyle(
-            color: Colors.orange,
-            fontSize: 20.0,
+            color: Color.fromARGB(255, 255, 115, 0),
+            fontSize: 40.0,
             fontWeight: FontWeight.bold,
+            fontFamily: 'BungeeSpice'
           ),
         ),
       ),
@@ -198,6 +199,7 @@ class HomeScreenState extends State<HomeScreen> {
                           color: Colors.white,
                           fontSize: 18.0,
                           fontWeight: FontWeight.bold,
+                          fontFamily: 'BungeeSpice',
                         ),
                       ),
                       const SizedBox(
@@ -206,20 +208,21 @@ class HomeScreenState extends State<HomeScreen> {
                       Row(
                         children: [
                           const CoinWidget(
-                              coinHeight: 20.0,
-                              coinWidth: 20.0,
-                              borderWidth: 2,
-                              centerIconSize: 13),
+                            coinHeight: 20.0,
+                            coinWidth: 20.0,
+                            borderWidth: 2,
+                            centerIconSize: 13,
+                          ),
                           const SizedBox(
                             width: 8.0,
                           ),
                           Text(
                             miner.profitPerHourFormattedString,
                             style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 13.0,
-                              fontWeight: FontWeight.bold,
-                            ),
+                                color: Colors.white,
+                                fontSize: 13.0,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'Rye'),
                           ),
                         ],
                       )
@@ -259,10 +262,10 @@ class HomeScreenState extends State<HomeScreen> {
         Text(
           "${miner.totalCoins.round()}",
           style: const TextStyle(
-            fontSize: 45,
-            color: Colors.white,
-            fontWeight: FontWeight.w900,
-          ),
+              fontSize: 45,
+              color: Colors.white,
+              fontWeight: FontWeight.w900,
+              fontFamily: 'Rye'),
         ),
       ],
     );
@@ -282,9 +285,11 @@ class HomeScreenState extends State<HomeScreen> {
             Text(
               "${miner.minerHashrate} / ${minerHashratePower.maxHashratePower}",
               style: const TextStyle(
-                  fontSize: 15.0,
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold),
+                fontSize: 15.0,
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'Rye',
+              ),
             ),
           ],
         ),
@@ -318,15 +323,22 @@ class HomeScreenState extends State<HomeScreen> {
         ),
         Row(
           children: [
-            const CoinWidget(coinHeight: 15.0, coinWidth: 15.0, borderWidth: 1, centerIconSize: 12,),
-            const SizedBox(width: 8,),
+            const CoinWidget(
+              coinHeight: 15.0,
+              coinWidth: 15.0,
+              borderWidth: 1,
+              centerIconSize: 12,
+            ),
+            const SizedBox(
+              width: 8,
+            ),
             Text(
               minerHashratePower.upgradeToNextLevelCostString,
               style: const TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w900,
-                fontSize: 14,
-              ),
+                  color: Colors.white,
+                  fontWeight: FontWeight.w900,
+                  fontSize: 14,
+                  fontFamily: 'Rye'),
             ),
           ],
         )

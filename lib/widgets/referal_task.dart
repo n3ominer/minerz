@@ -3,11 +3,16 @@ import 'package:minerz/models/referal/referal_task.dart';
 import 'package:minerz/widgets/coin.dart';
 
 class ReferalTasksCellWidget extends StatelessWidget {
-  const ReferalTasksCellWidget(
-      {super.key, required this.tasks, required this.taksIndex});
+  const ReferalTasksCellWidget({
+    super.key,
+    required this.tasks,
+    required this.taksIndex,
+    required this.fontFamily,
+  });
 
   final List<ReferalTasks> tasks;
   final int taksIndex;
+  final String fontFamily;
 
   @override
   Widget build(BuildContext context) {
@@ -68,9 +73,10 @@ class ReferalTasksCellWidget extends StatelessWidget {
                         ),
                         Text(
                           tasks[taksIndex].taskDescription,
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: Colors.white,
                             fontSize: 15.0,
+                            fontFamily: fontFamily
                           ),
                         ),
                       ],
