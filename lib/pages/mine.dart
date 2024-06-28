@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'dart:ui';
 
+import 'package:custom_sliding_segmented_control/custom_sliding_segmented_control.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:minerz/models/mining/common_mining_card.dart';
@@ -8,8 +9,10 @@ import 'package:minerz/models/mining/mocks/blockchain_mining_cards_mocks.dart';
 import 'package:minerz/models/mining/mocks/finance_mining_cards_mock.dart';
 import 'package:minerz/models/mining/mocks/hardware_software_mining_cards_mock.dart';
 import 'package:minerz/models/mining/mocks/special_mining_cards_mock.dart';
+import 'package:minerz/models/mining/special_mining_card.dart';
 import 'package:minerz/utils/string.dart';
 import 'package:minerz/widgets/coin.dart';
+import 'package:minerz/widgets/home/mining_sections_segmented_controler.dart';
 
 class MiningScreen extends StatefulWidget {
   const MiningScreen({super.key});
@@ -20,6 +23,7 @@ class MiningScreen extends StatefulWidget {
 
 class _MiningScreenState extends State<MiningScreen> {
   late int currentScreen;
+  late MiningSubject selectedSection;
 
   late List<CommonMiningCard> miningCards;
 
@@ -29,18 +33,28 @@ class _MiningScreenState extends State<MiningScreen> {
 
     miningCards = blockchainCards;
     currentScreen = 0;
+    selectedSection = MiningSubject.blockchain;
   }
 
-  void _updateMinigCardsList(int screenPos) {
-    switch (screenPos) {
-      case 0:
+  void _updateMinigCardsList(MiningSubject section) {
+    int screenPos = 0;
+    switch (section) {
+      case MiningSubject.blockchain:
         miningCards = blockchainCards;
-      case 1:
+        screenPos = 0;
+        selectedSection = MiningSubject.blockchain;
+      case MiningSubject.it:
         miningCards = hardwareAndSoftwareCards;
-      case 2:
+        screenPos = 1;
+        selectedSection = MiningSubject.it;
+      case MiningSubject.finance:
         miningCards = financeCards;
-      case 3:
+        screenPos = 2;
+        selectedSection = MiningSubject.finance;
+      case MiningSubject.specials:
         miningCards = specialMiningCards;
+        screenPos = 3;
+        selectedSection = MiningSubject.specials;
       default:
         miningCards = [];
     }
@@ -61,13 +75,21 @@ class _MiningScreenState extends State<MiningScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black,
       body: SizedBox(
         height: double.infinity,
         width: double.infinity,
         child: Column(
           children: [
-            _buildSegmentedController(),
-            _buildMiningCardsGridScrollView()
+            MiningSectionController(
+              callback: (screenPos) => setState(() {
+                _updateMinigCardsList(screenPos);
+              }),
+            ),
+            const SizedBox(
+              height: 8.0,
+            ),
+            _buildMiningCardsGridScrollView(selectedSection)
           ],
         ),
       ),
@@ -76,23 +98,7 @@ class _MiningScreenState extends State<MiningScreen> {
 
   /// UI Widget building
 
-  Container _buildSegmentedController() {
-    return Container(
-      height: 70.0,
-      color: Colors.black,
-      child: _buildSegmentedControl(
-        (screenPos) => setState(
-          () {
-            _updateMinigCardsList(screenPos);
-            print("Current state position $currentScreen");
-          },
-        ),
-        currentScreen,
-      ),
-    );
-  }
-
-  Expanded _buildMiningCardsGridScrollView() {
+  Expanded _buildMiningCardsGridScrollView(MiningSubject selectedSection) {
     return Expanded(
       child: Container(
         color: Colors.black,
@@ -101,24 +107,71 @@ class _MiningScreenState extends State<MiningScreen> {
           crossAxisCount: 2,
           children: List.generate(miningCards.length, (index) {
             CommonMiningCard card = miningCards[index];
-            return GestureDetector(
-              onTap: () => {
-                if (!card.cardIsLocked) {_handleBottomSheetDisplay(card)}
-              },
-              child: _buildGridMiningCardCell(card),
-            );
+            return selectedSection == MiningSubject.specials
+                ? _buildGridCardCellForSpecialMiningCard(
+                    card as SpecialMiningCard,
+                    selectedSection,
+                  )
+                : _buildGridCardCellForCommonMiningCard(
+                    card,
+                    selectedSection,
+                  );
           }),
         ),
       ),
     );
   }
 
-  Padding _buildGridMiningCardCell(CommonMiningCard card) {
+  GestureDetector _buildGridCardCellForCommonMiningCard(
+    CommonMiningCard card,
+    MiningSubject selectedSection,
+  ) {
+    return GestureDetector(
+      onTap: () => {
+        if (!card.cardIsLocked) {_handleBottomSheetDisplay(card)}
+      },
+      child: _buildGridMiningCardCell(card),
+    );
+  }
+
+  GestureDetector _buildGridCardCellForSpecialMiningCard(
+    SpecialMiningCard card,
+    MiningSubject selectedSection,
+  ) {
+    return GestureDetector(
+      onTap: () => {
+        if (!card.cardIsLocked) {_handleBottomSheetDisplay(card)}
+      },
+      child: _buildGridMiningCardCell(
+        card,
+        section: selectedSection,
+        bgColor: card.backgroundColor!,
+      ),
+    );
+  }
+
+  Padding _buildGridMiningCardCell(
+    CommonMiningCard card, {
+    Color bgColor = const Color.fromARGB(255, 28, 28, 28),
+    MiningSubject? section,
+  }) {
     return Padding(
       padding: const EdgeInsets.all(4.0),
       child: Container(
         decoration: BoxDecoration(
-          color: const Color.fromARGB(255, 28, 28, 28),
+          color: section == null ? bgColor : null,
+          gradient: section != null
+              ? LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    bgColor,
+                    bgColor.withAlpha(150),
+                    bgColor.withAlpha(100),
+                    Colors.black
+                  ],
+                )
+              : null,
           borderRadius: BorderRadius.circular(20.0),
         ),
         child: Column(
@@ -156,53 +209,6 @@ class _MiningScreenState extends State<MiningScreen> {
     );
   }
 
-  CupertinoSegmentedControl _buildSegmentedControl(
-      Function(int) callback, int screen) {
-    return CupertinoSegmentedControl(
-      onValueChanged: (value) => callback(value as int),
-      groupValue: screen,
-      children: const {
-        0: SizedBox(
-          height: 50,
-          child: Center(
-            child: Text(
-              "Blockchain",
-              style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
-            ),
-          ),
-        ),
-        1: SizedBox(
-          height: 40.0,
-          child: Center(
-            child: Text(
-              "IT & Technical",
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
-            ),
-          ),
-        ),
-        2: SizedBox(
-          height: 40.0,
-          child: Center(
-            child: Text(
-              "Finance",
-              style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
-            ),
-          ),
-        ),
-        3: SizedBox(
-          height: 40.0,
-          child: Center(
-            child: Text(
-              "Specials",
-              style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
-            ),
-          ),
-        ),
-      },
-    );
-  }
-
   Stack _buildMiningCardIcon(CommonMiningCard card) {
     return Stack(
       alignment: Alignment.center,
@@ -221,7 +227,7 @@ class _MiningScreenState extends State<MiningScreen> {
                   height: 80,
                   width: 80,
                   decoration: BoxDecoration(
-                    color: Colors.orange,
+                    color: const Color.fromARGB(255, 167, 167, 167),
                     borderRadius: BorderRadius.circular(5.0),
                   ),
                   child: FadeInImage.assetNetwork(
@@ -251,7 +257,7 @@ class _MiningScreenState extends State<MiningScreen> {
         const Text(
           "Profit/h",
           style: TextStyle(
-            color: Colors.grey,
+            color: Colors.white,
             fontSize: 10.0,
             fontWeight: FontWeight.bold,
           ),

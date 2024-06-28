@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:minerz/models/mining/special_mining_card.dart';
 
 List<SpecialMiningCard> specialMiningCards = [
@@ -16,6 +17,7 @@ List<SpecialMiningCard> specialMiningCards = [
     isPerishable: false,
     isFinished: false,
     availabilityToBOwnedTimer: 0,
+    backgroundColor: Colors.red
   ),
   SpecialMiningCard(
     "special002",
@@ -32,6 +34,7 @@ List<SpecialMiningCard> specialMiningCards = [
     isPerishable: true,
     isFinished: false,
     availabilityToBOwnedTimer: 3600,
+    backgroundColor: const Color.fromARGB(255, 120, 68, 0)
   ),
   SpecialMiningCard(
     "special003",
@@ -48,6 +51,7 @@ List<SpecialMiningCard> specialMiningCards = [
     isPerishable: false,
     isFinished: false,
     availabilityToBOwnedTimer: 0,
+    backgroundColor: Colors.orange
   ),
   SpecialMiningCard(
     "special004",
@@ -64,6 +68,7 @@ List<SpecialMiningCard> specialMiningCards = [
     isPerishable: false,
     isFinished: false,
     availabilityToBOwnedTimer: 0,
+    backgroundColor: Colors.blue
   ),
   SpecialMiningCard(
     "special005",
@@ -80,6 +85,7 @@ List<SpecialMiningCard> specialMiningCards = [
     isPerishable: false,
     isFinished: false,
     availabilityToBOwnedTimer: 0,
+    backgroundColor: Colors.green,
   ),
   SpecialMiningCard(
     "special006",
@@ -96,6 +102,7 @@ List<SpecialMiningCard> specialMiningCards = [
     isPerishable: false,
     isFinished: false,
     availabilityToBOwnedTimer: 0,
+    backgroundColor: Colors.deepPurple
   ),
   SpecialMiningCard(
     "special007",
@@ -112,5 +119,6 @@ List<SpecialMiningCard> specialMiningCards = [
     isPerishable: false,
     isFinished: false,
     availabilityToBOwnedTimer: 0,
+    backgroundColor: const Color.fromARGB(255, 0, 0, 212)
   ),
 ];
