@@ -35,8 +35,7 @@ class CoinWidget extends StatelessWidget {
         ),
       ),
       child: Icon(
-        //Icons.currency_bitcoin,
-        Icons.diamond_rounded,
+        Icons.currency_bitcoin,
         size: centerIconSize,
       ),
     );

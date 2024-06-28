@@ -7,7 +7,7 @@ class Miner {
   double totalCoins = 2000;
   int minerHashrate = 2000;
   
-  String _name = "Holder B";
+  String _name = "Holder ₿";
   String _profilIconUrl = "https://robohash.org/";
   
   MinerLevel _level = MinerLevel.newbie;  

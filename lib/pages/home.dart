@@ -188,7 +188,7 @@ class HomeScreenState extends State<HomeScreen> {
                       Text(
                         miner.name,
                         style: const TextStyle(
-                          color: Colors.white,
+                          color: Colors.deepOrangeAccent,
                           fontSize: 18.0,
                           fontWeight: FontWeight.bold,
                           fontFamily: 'BungeeSpice',
