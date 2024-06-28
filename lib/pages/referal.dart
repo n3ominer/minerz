@@ -55,6 +55,8 @@ class _ReferralScreenState extends State<ReferralScreen> {
                 borderRadius: BorderRadius.circular(20),
                 child: Image.asset(
                   "images/satoshi_referal.jpeg",
+                  cacheHeight: 500,
+                  cacheWidth: 500,
                   fit: BoxFit.fill,
                 ),
               ),
