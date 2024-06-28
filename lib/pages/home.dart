@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:minerz/models/miner/hashrate_power.dart';
 import 'package:minerz/models/miner/miner.dart';
 import 'package:minerz/widgets/coin.dart';
+import 'package:minerz/widgets/home/invisible_earning_coins_grid_item.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -18,37 +19,45 @@ class HomeScreenState extends State<HomeScreen> {
   late MinerHashratePower minerHashratePower;
 
   // Timer
-  Timer? timer;
+  Timer? hashrateTimer;
+
+  Timer? coinsCountTimer;
 
   @override
   void initState() {
     super.initState();
     minerHashratePower = miner.minerHashratePower;
     _setUpHashRateReloadTimer();
+    _setUpTotalCoinReloadTimer();
   }
 
   @override
   void dispose() {
-    timer?.cancel();
+    hashrateTimer?.cancel();
+    coinsCountTimer?.cancel();
     super.dispose();
   }
 
   void _setUpHashRateReloadTimer() {
-    timer = Timer.periodic(
-      const Duration(milliseconds: 1200),
+    hashrateTimer = Timer.periodic(
+      const Duration(milliseconds: 1500),
       (Timer t) => setState(() {
         if (miner.minerHashrate <
             minerHashratePower.maxHashratePower -
                 minerHashratePower.miningEarnings) {
           miner.minerHashrate += minerHashratePower.miningEarnings;
-          print(
-              "Reloaded ${minerHashratePower.miningEarnings} to the hash power");
         } else {
           miner.minerHashrate = minerHashratePower.maxHashratePower;
-          //timer?.cancel();
-          print("Timer canceled");
+          hashrateTimer?.cancel();
         }
+      }),
+    );
+  }
 
+  void _setUpTotalCoinReloadTimer() {
+    coinsCountTimer = Timer.periodic(
+      const Duration(milliseconds: 1000),
+      (Timer t) => setState(() {
         if (miner.profitPerHour > 0) {
           miner.totalCoins += miner.profitPerHour / 3600;
         }
@@ -59,9 +68,9 @@ class HomeScreenState extends State<HomeScreen> {
   void _consumeHashRate() {
     setState(() {
       if (miner.minerHashrate >= minerHashratePower.miningEarnings) {
-        if (timer != null && !(timer!.isActive)) {
+        if (hashrateTimer != null && !(hashrateTimer!.isActive)) {
           _setUpHashRateReloadTimer();
-          print("Timer restarted");
+          //print("Timer restarted");
         }
         miner.minerHashrate -= minerHashratePower.miningEarnings;
         miner.totalCoins += minerHashratePower.miningEarnings;
@@ -106,11 +115,10 @@ class HomeScreenState extends State<HomeScreen> {
         title: const Text(
           "Minerz",
           style: TextStyle(
-            color: Color.fromARGB(255, 255, 115, 0),
-            fontSize: 40.0,
-            fontWeight: FontWeight.bold,
-            fontFamily: 'BungeeSpice'
-          ),
+              color: Color.fromARGB(255, 255, 115, 0),
+              fontSize: 40.0,
+              fontWeight: FontWeight.bold,
+              fontFamily: 'BungeeSpice'),
         ),
       ),
       backgroundColor: Colors.black,
@@ -119,25 +127,9 @@ class HomeScreenState extends State<HomeScreen> {
         children: [
           _buildMinerStatContainer(miner.profilIconUrl),
           _buildCoinsCounter(),
-          GestureDetector(
-            onTap: () => {_consumeHashRate()},
-            child: const CoinWidget(
-              coinHeight: 300.0,
-              coinWidth: 300.0,
-              borderWidth: 20,
-              centerIconSize: 190,
-            ),
-          ),
-          Padding(
-            /// Hashrate bottom section
-            padding: const EdgeInsets.only(left: 16.0, right: 16.0),
-            child: _buildBottomHashrate(),
-          ),
-          Container(
-            /// Bottom separator between the views and the navigation bar
-            height: 0.2,
-            color: Colors.white,
-          ),
+          _buildCenterCoinClickingStack(),
+          _buildBottomHashrate(),
+          _buildSeparator()
         ],
       ),
     );
@@ -271,33 +263,69 @@ class HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Row _buildBottomHashrate() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  Stack _buildCenterCoinClickingStack() {
+    return Stack(
+      alignment: Alignment.center,
       children: [
-        Row(
-          children: [
-            const Icon(
-              Icons.bolt,
-              size: 25.0,
-              color: Colors.white,
-            ),
-            Text(
-              "${miner.minerHashrate} / ${minerHashratePower.maxHashratePower}",
-              style: const TextStyle(
-                fontSize: 15.0,
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontFamily: 'Rye',
-              ),
-            ),
-          ],
+        const CoinWidget(
+          coinHeight: 300.0,
+          coinWidth: 300.0,
+          borderWidth: 20,
+          centerIconSize: 190,
         ),
-        GestureDetector(
-          onTap: () => {_upgradeMaxHashRate()},
-          child: _buildHashrateBoostWidget(),
+        SizedBox(
+          height: 300,
+          width: 300,
+          child: GridView.count(
+            childAspectRatio: 1,
+            crossAxisCount: 4,
+            physics: const NeverScrollableScrollPhysics(),
+            children: List.generate(16, (index) {
+              return Padding(
+                padding: const EdgeInsets.all(1.0),
+                child: InvisibleCoinEarningGridItem(
+                  earningsPoints: miner.minerHashratePower.miningEarnings,
+                  isHrPowerAvailable: miner.minerHashrate > 0,
+                  clickAction: () => _consumeHashRate(),
+                ),
+              );
+            }),
+          ),
         ),
       ],
+    );
+  }
+
+  Padding _buildBottomHashrate() {
+    return Padding(
+      padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              const Icon(
+                Icons.bolt,
+                size: 25.0,
+                color: Colors.white,
+              ),
+              Text(
+                "${miner.minerHashrate} / ${minerHashratePower.maxHashratePower}",
+                style: const TextStyle(
+                  fontSize: 15.0,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'Rye',
+                ),
+              ),
+            ],
+          ),
+          GestureDetector(
+            onTap: () => {_upgradeMaxHashRate()},
+            child: _buildHashrateBoostWidget(),
+          ),
+        ],
+      ),
     );
   }
 
@@ -343,6 +371,14 @@ class HomeScreenState extends State<HomeScreen> {
           ],
         )
       ],
+    );
+  }
+
+  Container _buildSeparator() {
+    return Container(
+      /// Bottom separator between the views and the navigation bar
+      height: 0.2,
+      color: Colors.white,
     );
   }
 }
