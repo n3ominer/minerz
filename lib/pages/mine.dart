@@ -67,25 +67,7 @@ class _MiningScreenState extends State<MiningScreen> {
         child: Column(
           children: [
             _buildSegmentedController(),
-            Expanded(
-              child: Container(
-                color: Colors.black,
-                child: GridView.count(
-                  childAspectRatio: 0.8,
-                  crossAxisCount: 2,
-                  children: List.generate(miningCards.length, (index) {
-                    CommonMiningCard card = miningCards[index];
-                    return GestureDetector(
-                      onTap: () => {
-                        if (!card.cardIsLocked)
-                          {_handleBottomSheetDisplay(card)}
-                      },
-                      child: _buildGridMiningCardCell(card),
-                    );
-                  }),
-                ),
-              ),
-            ),
+            _buildMiningCardsGridScrollView()
           ],
         ),
       ),
@@ -106,6 +88,27 @@ class _MiningScreenState extends State<MiningScreen> {
           },
         ),
         currentScreen,
+      ),
+    );
+  }
+
+  Expanded _buildMiningCardsGridScrollView() {
+    return Expanded(
+      child: Container(
+        color: Colors.black,
+        child: GridView.count(
+          childAspectRatio: 0.8,
+          crossAxisCount: 2,
+          children: List.generate(miningCards.length, (index) {
+            CommonMiningCard card = miningCards[index];
+            return GestureDetector(
+              onTap: () => {
+                if (!card.cardIsLocked) {_handleBottomSheetDisplay(card)}
+              },
+              child: _buildGridMiningCardCell(card),
+            );
+          }),
+        ),
       ),
     );
   }
@@ -359,7 +362,8 @@ class _MiningScreenState extends State<MiningScreen> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 24.0),
+                padding:
+                    const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 24.0),
                 child: Text(
                   card.cardDescription,
                   textAlign: TextAlign.center,
