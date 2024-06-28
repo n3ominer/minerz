@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:minerz/pages/btc_learning.dart';
 import 'package:minerz/pages/home.dart';
 import 'package:minerz/pages/mine.dart';
 import 'package:minerz/pages/referal.dart';
-import 'package:minerz/pages/wallet.dart';
 
 class NavigationBarApp extends StatelessWidget {
   const NavigationBarApp({super.key});
@@ -30,7 +30,7 @@ class _NavigationExampleState extends State<NavigationExample> {
     const HomeScreen(),
     const MiningScreen(),
     const ReferralScreen(),
-    const WalletScreen()
+    const BitcoinLearningScreen()
   ];
 
   @override
@@ -49,10 +49,10 @@ class _NavigationExampleState extends State<NavigationExample> {
           indicatorColor: Colors.orange,
           selectedIndex: currentPageIndex,
           destinations: <Widget>[
-            _buildNavigationDestination(Icons.home, Icons.home),
+            _buildNavigationDestination(Icons.paid, Icons.paid_outlined),
             _buildNavigationDestination(Icons.construction, Icons.construction_outlined),
             _buildNavigationDestination(Icons.group_add, Icons.group_add_rounded),
-            _buildNavigationDestination(Icons.account_balance_wallet, Icons.account_balance_wallet_outlined),
+            _buildNavigationDestination(Icons.school, Icons.school_outlined),
           ],
         ),
         body: pages[currentPageIndex],
