@@ -1,8 +1,6 @@
+import 'dart:async';
 import 'dart:math';
 import 'dart:ui';
-
-import 'package:custom_sliding_segmented_control/custom_sliding_segmented_control.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:minerz/models/mining/common_mining_card.dart';
 import 'package:minerz/models/mining/mocks/blockchain_mining_cards_mocks.dart';
@@ -10,9 +8,11 @@ import 'package:minerz/models/mining/mocks/finance_mining_cards_mock.dart';
 import 'package:minerz/models/mining/mocks/hardware_software_mining_cards_mock.dart';
 import 'package:minerz/models/mining/mocks/special_mining_cards_mock.dart';
 import 'package:minerz/models/mining/special_mining_card.dart';
+import 'package:minerz/pages/btc_learning.dart';
 import 'package:minerz/utils/string.dart';
 import 'package:minerz/widgets/coin.dart';
 import 'package:minerz/widgets/home/mining_sections_segmented_controler.dart';
+import 'package:minerz/widgets/utils/timer.dart';
 
 class MiningScreen extends StatefulWidget {
   const MiningScreen({super.key});
@@ -26,6 +26,8 @@ class _MiningScreenState extends State<MiningScreen> {
   late MiningSubject selectedSection;
 
   late List<CommonMiningCard> miningCards;
+
+  late Timer dailyJackpotQuestsTimer;
 
   @override
   void initState() {
@@ -75,20 +77,31 @@ class _MiningScreenState extends State<MiningScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.black,
+        title: const Text(
+          "Mining",
+          style: TextStyle(
+              color: Colors.white,
+              fontSize: 25,
+              fontWeight: FontWeight.bold,
+              fontFamily: 'BungeeSpice'),
+        ),
+      ),
       backgroundColor: Colors.black,
       body: SizedBox(
         height: double.infinity,
         width: double.infinity,
         child: Column(
           children: [
+            _buildDailyJackpotQuestsContainer(),
+            _buildQuestsRow(),
             MiningSectionController(
               callback: (screenPos) => setState(() {
                 _updateMinigCardsList(screenPos);
               }),
             ),
-            const SizedBox(
-              height: 8.0,
-            ),
+            const SizedBox(height: 16.0),
             _buildMiningCardsGridScrollView(selectedSection)
           ],
         ),
@@ -97,6 +110,134 @@ class _MiningScreenState extends State<MiningScreen> {
   }
 
   /// UI Widget building
+
+  Padding _buildDailyJackpotQuestsContainer() {
+    return Padding(
+      padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
+      child: Container(
+        height: 50.0,
+        decoration: BoxDecoration(
+          color: const Color.fromARGB(255, 28, 28, 28),
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        child: Row(
+          children: [
+            const SizedBox(width: 8.0),
+            const Icon(Icons.timer, color: Colors.white, size: 30.0),
+            const SizedBox(width: 8.0),
+            const Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Daily jackpot quests",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 15.0,
+                    fontFamily: 'PatuaOne',
+                  ),
+                ),
+                CustomTimerWidget(),
+              ],
+            ),
+            const Expanded(child: SizedBox()),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                GestureDetector(
+                  onTap: () => {
+                    showModalBottomSheet<void>(
+                      isScrollControlled: true,
+                      context: context,
+                      backgroundColor: Colors.black,
+                      builder: (BuildContext context) {
+                        return _buildInfoBottomSheet();
+                      },
+                    ),
+                    print("OUHOOOO")
+                  },
+                  child: const Icon(
+                    Icons.info,
+                    size: 20.0,
+                    color: Colors.blue,
+                  ),
+                ),
+                const SizedBox(
+                  height: 4.0,
+                ),
+                const Row(
+                  children: [
+                    CoinWidget(
+                      coinHeight: 15.0,
+                      coinWidth: 15.0,
+                      borderWidth: 1,
+                      centerIconSize: 12.0,
+                    ),
+                    SizedBox(width: 4.0),
+                    Text(
+                      "6,000,000",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 15.0,
+                        fontFamily: 'Rye',
+                      ),
+                    )
+                  ],
+                )
+              ],
+            ),
+            const SizedBox(width: 8.0),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Padding _buildQuestsRow() {
+    return Padding(
+      padding: const EdgeInsets.only(
+        left: 12.0,
+        right: 12.0,
+        bottom: 16.0,
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: List.generate(
+          3,
+          (index) => Expanded(
+            flex: 1,
+            child: Padding(
+              padding: const EdgeInsets.all(4.0),
+              child: Container(
+                height: 120,
+                decoration: BoxDecoration(
+                  color: Color.fromRGBO(
+                    Random().nextInt(255),
+                    Random().nextInt(255),
+                    Random().nextInt(255),
+                    Random().nextInt(255).toDouble(),
+                  ),
+                  borderRadius: BorderRadius.circular(15.0),
+                  border: Border.all(
+                    color: Colors.orange,
+                    width: 3,
+                  ),
+                ),
+                child: const Center(
+                  child: Icon(
+                    Icons.question_mark,
+                    size: 90.0,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 
   Expanded _buildMiningCardsGridScrollView(MiningSubject selectedSection) {
     return Expanded(
@@ -173,6 +314,10 @@ class _MiningScreenState extends State<MiningScreen> {
                 )
               : null,
           borderRadius: BorderRadius.circular(20.0),
+          border: Border.all(
+            color: Colors.white,
+            width: 0.5,
+          ),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -461,6 +606,86 @@ class _MiningScreenState extends State<MiningScreen> {
                         fontSize: 25.0,
                         fontWeight: FontWeight.bold,
                         fontFamily: 'PatuaOne',
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  FractionallySizedBox _buildInfoBottomSheet() {
+    return FractionallySizedBox(
+      heightFactor: 0.5,
+      widthFactor: 1,
+      child: SafeArea(
+        bottom: true,
+        child: Container(
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: const Color.fromARGB(255, 158, 158, 158),
+              width: 0.7,
+            ),
+            borderRadius: const BorderRadius.all(Radius.circular(20.0)),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              SizedBox(
+                height: 150.0,
+                width: 150.0,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: Image.asset(
+                    "images/satoshi_referal.jpeg",
+                    cacheHeight: 500,
+                    cacheWidth: 500,
+                    fit: BoxFit.fill,
+                  ),
+                ),
+              ),
+              const Padding(
+                padding: EdgeInsets.only(left: 8.0, right: 8.0),
+                child: Text(
+                  "You have daily quests to solve and 24h to earn 6,000,000 coins !! \n Learn about bitcoin and do some research to find the answers.",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'PatuaOne',
+                  ),
+                ),
+              ),
+              GestureDetector(
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const BitcoinLearningScreen(),
+                    ),
+                  );
+                },
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+                  child: Container(
+                    height: 60.0,
+                    decoration: BoxDecoration(
+                      color: Colors.deepOrange,
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    child: const Center(
+                      child: Text(
+                        "Let's go !",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 25.0,
+                          fontFamily: 'PatuaOne',
+                        ),
                       ),
                     ),
                   ),
