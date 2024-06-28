@@ -19,6 +19,7 @@ class _WalletStateScreen extends State<WalletScreen> {
             color: Colors.white,
             fontSize: 25,
             fontWeight: FontWeight.bold,
+            fontFamily: 'BungeeSpice'
           ),
         ),
         actions: [
