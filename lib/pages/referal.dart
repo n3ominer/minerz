@@ -46,11 +46,18 @@ class _ReferralScreenState extends State<ReferralScreen> {
       body: ListView(
         shrinkWrap: true,
         children: [
+          const SizedBox(height: 20.0,),
           Center(
-            child: Container(
+            child: SizedBox(
               height: 200.0,
               width: 200.0,
-              color: Colors.red,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: Image.asset(
+                  "images/satoshi_referal.jpeg",
+                  fit: BoxFit.fill,
+                ),
+              ),
             ),
           ),
           const Center(
@@ -75,7 +82,8 @@ class _ReferralScreenState extends State<ReferralScreen> {
           const SizedBox(
             height: 16,
           ),
-          _buildTasksSection(true, dailyTasks, sectionTitle: "Daily tasks", hasEarnings: false),
+          _buildTasksSection(true, dailyTasks,
+              sectionTitle: "Daily tasks", hasEarnings: false),
           const SizedBox(
             height: 16,
           ),
