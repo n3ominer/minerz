@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:minerz/models/miner/hashrate_power.dart';
 import 'package:minerz/models/miner/miner.dart';
+import 'package:minerz/pages/wallet.dart';
 import 'package:minerz/widgets/coin.dart';
 import 'package:minerz/widgets/home/invisible_earning_coins_grid_item.dart';
 
@@ -45,7 +46,7 @@ class HomeScreenState extends State<HomeScreen> {
         if (miner.minerHashrate <
             minerHashratePower.maxHashratePower -
                 minerHashratePower.miningEarnings) {
-          miner.minerHashrate += minerHashratePower.miningEarnings;
+          miner.minerHashrate += (minerHashratePower.miningEarnings * 0.55).round();
         } else {
           miner.minerHashrate = minerHashratePower.maxHashratePower;
           hashrateTimer?.cancel();
@@ -112,6 +113,29 @@ class HomeScreenState extends State<HomeScreen> {
             ),
           ),
         ],
+        leading: GestureDetector(
+          onTap: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => const WalletScreen(),
+              ),
+            );
+          },
+          child: const Padding(
+            padding: EdgeInsets.only(
+              left: 16.0,
+            ),
+            child: SizedBox(
+              height: 35.0,
+              width: 50.0,
+              child: Icon(
+                Icons.wallet,
+                color: Colors.white,
+                size: 30,
+              ),
+            ),
+          ),
+        ),
         title: const Text(
           "Minerz",
           style: TextStyle(
@@ -254,10 +278,11 @@ class HomeScreenState extends State<HomeScreen> {
         Text(
           "${miner.totalCoins.round()}",
           style: const TextStyle(
-              fontSize: 45,
-              color: Colors.white,
-              fontWeight: FontWeight.w900,
-              fontFamily: 'Rye'),
+            fontSize: 45,
+            color: Colors.white,
+            fontWeight: FontWeight.w900,
+            fontFamily: 'Rye',
+          ),
         ),
       ],
     );
@@ -285,7 +310,7 @@ class HomeScreenState extends State<HomeScreen> {
                 padding: const EdgeInsets.all(1.0),
                 child: InvisibleCoinEarningGridItem(
                   earningsPoints: miner.minerHashratePower.miningEarnings,
-                  isHrPowerAvailable: miner.minerHashrate > 0,
+                  isHrPowerAvailable: miner.minerHashrate >= miner.minerHashratePower.miningEarnings,
                   clickAction: () => _consumeHashRate(),
                 ),
               );
