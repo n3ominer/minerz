@@ -1,0 +1,1 @@
+String lnurlWallet = "lnurl1dp68gurn8ghj7ampd3kx2ar0veekzar0wd5xjtnrdakj7tnhv4kxctttdehhwm30d3h82unvwqhkzmn8v4ex2erxv4kx7mnexqmqzzjg68";

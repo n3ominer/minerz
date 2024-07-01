@@ -46,7 +46,9 @@ class _ReferralScreenState extends State<ReferralScreen> {
       body: ListView(
         shrinkWrap: true,
         children: [
-          const SizedBox(height: 20.0,),
+          const SizedBox(
+            height: 20.0,
+          ),
           Center(
             child: SizedBox(
               height: 200.0,
@@ -79,27 +81,44 @@ class _ReferralScreenState extends State<ReferralScreen> {
           _buildTasksSection(
             true,
             inviteTasks,
+            () {},
             sectionTitle: "Invite tasks",
           ),
           const SizedBox(
             height: 16,
           ),
-          _buildTasksSection(true, dailyTasks,
-              sectionTitle: "Daily tasks", hasEarnings: false),
+          _buildTasksSection(
+            true,
+            dailyTasks,
+            () {},
+            sectionTitle: "Daily tasks",
+            hasEarnings: false,
+          ),
           const SizedBox(
             height: 16,
           ),
-          _buildTasksSection(true, specialTasks, sectionTitle: "Special tasks"),
+          _buildTasksSection(
+            true,
+            specialTasks,
+            () {},
+            sectionTitle: "Special tasks",
+          ),
           const SizedBox(
             height: 10,
           ),
-          _buildTasksSection(true, bonusTasks, sectionTitle: "Bonus"),
+          _buildTasksSection(
+            true,
+            bonusTasks,
+            () {},
+            sectionTitle: "Bonus",
+          ),
         ],
       ),
     );
   }
 
-  Padding _buildTasksSection(bool withSectionTitle, List<ReferalTasks> tasks,
+  Padding _buildTasksSection(
+      bool withSectionTitle, List<ReferalTasks> tasks, Function? onTapCallback,
       {String sectionTitle = "", bool hasEarnings = true}) {
     return Padding(
       padding: const EdgeInsets.only(left: 8.0, right: 8.0),
@@ -127,6 +146,7 @@ class _ReferralScreenState extends State<ReferralScreen> {
                 return GestureDetector(
                   onTap: () {
                     print("Display task");
+                    tasks[index].taskAction(context);
                   },
                   child: ReferalTasksCellWidget(
                     tasks: tasks,
